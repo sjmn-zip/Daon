@@ -143,7 +143,7 @@ mindcare-ai/
 - [x] **Phase 2** — 데이터 준비
   - [x] 2-1. AI Hub 감성대화 데이터 수집
   - [x] 2-2. 데이터 탐색 및 전처리
-- [ ] **Phase 3** — 감정 분류기 학습 (KoBERT 파인튜닝)
+- [x] **Phase 3** — 감정 분류기 학습 (KoBERT 파인튜닝)
 - [ ] **Phase 4** — 위기 탐지 게이트 구현 (규칙 → 분류기)
 - [ ] **Phase 5** — LLM 연동 & 프롬프트 설계
 - [ ] **Phase 6** — FastAPI 백엔드 통합 + Oracle 연동
