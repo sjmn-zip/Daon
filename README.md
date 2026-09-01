@@ -88,7 +88,7 @@ Daon은 사용자의 감정 상태를 분석하고 정서적 지지를 제공하
 ## 📂 프로젝트 구조
 
 ```
-mindcare-ai/
+Daon/
 ├── app/
 │   ├── main.py              # FastAPI 엔트리포인트
 │   ├── ui.py                # Streamlit 프론트엔드 (데모)
