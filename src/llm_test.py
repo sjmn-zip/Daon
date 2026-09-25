@@ -14,4 +14,4 @@ interaction = client.interactions.create(
 )
 
 # ④ 응답 텍스트만 출력
-print(interaction.response)
+print(interaction.output_text)
