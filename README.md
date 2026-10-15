@@ -192,6 +192,3 @@ MIT License
 ## 👤 Author
 
 산업IT공학(ITM) | Son Jaemin
-
-
-
