@@ -71,10 +71,11 @@ LLM에 모든 판단을 맡기지 않고, **직접 학습한 감정 분류기**�
 
 | 컴포넌트 | 구현 방식 | 상태 |
 |---------|----------|------|
-| 위기 탐지 | 규칙 기반 (위기 신호 / 임박 신호 분리) | ✅ 1차 완료, AI 보강 예정 |
-| 감정 분류 | KoBERT 파인튜닝 (6-클래스) | ✅ 1차 완료 |
-| 응답 생성 | Gemini API + 감정 주입 프롬프트 | 🔄 진행 중 |
-| 백엔드 통합 | FastAPI | ⏳ 예정 |
+| 위기 탐지 | 규칙 기반 (위기 신호 / 임박 신호 분리) | ✅ 1차 완료, AI 보강 연계 |
+| 감정 분류 | KoBERT 파인튜닝 (6-클래스) + Gemini 하이브리드 교차 검증 | ✅ 완료 |
+| 응답 생성 | Gemini API + 감정 주입 공감 프롬프트 | ✅ 완료 |
+| 대화 플랫폼 | Streamlit (마음 날씨 이모지 위젯 + 감정 스펙트럼) | ✅ 완료 |
+| 백엔드 통합 | FastAPI (REST API 엔드포인트) | ⏳ 예정 |
 | 감정 로그 | Oracle (세션별 감정 변화 기록) | ⏳ 예정 |
 
 ---
@@ -83,16 +84,16 @@ LLM에 모든 판단을 맡기지 않고, **직접 학습한 감정 분류기**�
 
 | 영역 | 기술 | 선택 이유 |
 |------|------|----------|
-| **ML / NLP** | PyTorch, HuggingFace Transformers | 사전학습 모델(KoBERT) 파인튜닝 |
+| **ML / NLP** | PyTorch, HuggingFace Transformers, KoBERT | 한국어 감정 분류기 파인튜닝 |
 | **Data** | pandas, NumPy | 5.2만 건 JSON 전처리 및 결과 분석 |
 | **학습 환경** | Google Colab (T4 GPU) | 무료 GPU로 학습 시간 단축 |
-| **LLM** | Google **Gemini API** | 무료 티어로 개발 충분, 발급 간편 |
-| **Backend** | FastAPI (예정) | ML 코드와 같은 Python, API 형태로 프론트와 분리 |
-| **Frontend** | Streamlit → JavaScript (예정) | Streamlit으로 MVP 검증 후 JS로 확장 |
+| **LLM** | Google **Gemini API** (`google-genai`) | 공감 응답 생성 및 저신뢰도 감정 교차 검증 |
+| **Frontend** | **Streamlit** (현재) → JavaScript (예정) | 프로토타입 빠른 검증 후 웹 확장 |
+| **Backend** | FastAPI (예정) | ML/LLM 엔진을 독립 API로 서빙 |
 | **Database** | Oracle + `oracledb` (예정) | 기존 보유 환경 활용 |
 
-> 💡 **프론트엔드 전략**: 먼저 Streamlit으로 작동하는 데모를 확보한 뒤 JavaScript로 전환합니다.
-> 백엔드를 FastAPI(API)로 분리해 두었기 때문에 프론트가 바뀌어도 백엔드는 그대로 재사용됩니다.
+> 💡 **프론트엔드 전략**: Streamlit으로 작동하는 플랫폼을 확보한 뒤 향후 JavaScript/React로 전환합니다.
+> 코어 엔진(`app/core/engine.py`)이 모듈화되어 있어 프론트가 바뀌어도 그대로 재사용됩니다.
 
 ---
 
@@ -109,24 +110,26 @@ LLM에 모든 판단을 맡기지 않고, **직접 학습한 감정 분류기**�
 
 ---
 
-## 📂 프로젝트 구조 (목표)
+## 📂 프로젝트 구조
 
 ```
 Daon/
 ├── app/
-│   ├── main.py              # FastAPI 엔트리포인트            (예정)
-│   ├── ui.py                # Streamlit 데모                 (예정)
+│   ├── ui.py                # 🌿 Streamlit 대화형 플랫폼 (마음 날씨/감정 차트) ✅
 │   └── core/
-│       ├── crisis_gate.py   # 위기 탐지 게이트                 ✅
-│       ├── emotion.py       # 감정 분류 추론                  (예정)
-│       └── llm.py           # LLM 응답 생성                   🔄
-├── ml/
-│   ├── explore.py           # 데이터 탐색                     ✅
-│   ├── process.py           # 전처리 (JSON → 문장+감정 표)      ✅
-│   └── notebooks/           # KoBERT 학습 노트북 (Colab)       ✅
+│       ├── crisis_gate.py   # 🛡️ 위기 탐지 게이트 (Safety Gate)            ✅
+│       ├── emotion.py       # 🎭 6-클래스 감정분류 + Gemini 하이브리드 검증   ✅
+│       ├── llm.py           # 💬 Gemini 공감 응답 생성기                   ✅
+│       └── engine.py        # ⚙️ 3단계 안전 통합 오케스트레이터             ✅
+├── src/
+│   ├── crisis_gate.py       # 위기 탐지 게이트 1차 프로토타입
+│   ├── explore.py           # 데이터 탐색 스크립트
+│   ├── llm_test.py          # Gemini API 호출 테스트
+│   └── process.py           # AI Hub 데이터 전처리 파이프라인
 ├── data/                    # 데이터셋 (gitignore)
+├── Daon.ipynb               # KoBERT 파인튜닝 학습 노트북 (Colab)
 ├── .env                     # API 키 (gitignore)
-├── requirements.txt
+├── requirements.txt         # 필수 라이브러리 목록
 └── README.md
 ```
 
@@ -139,9 +142,9 @@ Daon/
 - [x] **Phase 2** — 데이터 준비 (AI Hub 감성대화 5.2만 건 수집·전처리)
 - [x] **Phase 3** — 감정 분류기 학습 (KoBERT 파인튜닝, Acc 57.40%)
 - [x] **Phase 4** — 위기 탐지 게이트 (규칙 기반, 강도 분기)
-- [ ] **Phase 5** — LLM 연동 & 프롬프트 설계 (Gemini) 🔄
+- [x] **Phase 5** — LLM 연동 & 프롬프트 설계 & 하이브리드 교차 검증 (Gemini) ✅
 - [ ] **Phase 6** — FastAPI 백엔드 통합 + Oracle 연동
-- [ ] **Phase 7** — Streamlit MVP 데모
+- [x] **Phase 7** — Streamlit MVP 플랫폼 (마음 날씨 + 감정 스펙트럼) ✅
 - [ ] **Phase 8~9** — JavaScript 프론트엔드 전환 & 배포
 
 ---
@@ -157,14 +160,11 @@ venv\Scripts\activate            # macOS/Linux: source venv/bin/activate
 pip install -r requirements.txt
 
 # 3. 환경 변수 설정 (.env 파일 생성)
-# GEMINI_API_KEY=your_key
+# GEMINI_API_KEY=your_gemini_api_key
 
-# 4. 위기 탐지 게이트 테스트 (현재 실행 가능)
-python app/core/crisis_gate.py
+# 4. Streamlit 대화형 챗봇 플랫폼 실행
+streamlit run app/ui.py
 ```
-
-> ⚠️ `.env`(API 키)는 `.gitignore`에 등록되어 있으며 **절대 커밋하지 않습니다.**
-> 백엔드(`uvicorn`)와 데모(`streamlit`) 실행법은 Phase 6~7 완료 후 추가합니다.
 
 ---
 
