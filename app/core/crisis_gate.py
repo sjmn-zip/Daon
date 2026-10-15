@@ -11,7 +11,6 @@ class CrisisGate:
             "죽고 싶", "사라지고 싶", "살기 싫", "더 못 버티", "더는 못 버티",
             "죽으려", "죽어버리", "세상을 떠나", "끝내고 싶", "극단적", "자해", "목숨"
         ]
-        
         # 임박 신호 (구체적 방법, 시점, 실행 도구 → 무조건 고위험)
         self.imminent_keywords = [
             "지금", "오늘", "방법", "유서", "준비했", "약", "번개탄", "투신", "옥상"
@@ -32,7 +31,7 @@ class CrisisGate:
 
         # 임박 신호 검사
         matched_imminent = [kw for kw in self.imminent_keywords if kw in text_clean]
-        
+
         if matched_imminent:
             return {
                 "crisis": True,
