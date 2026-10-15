@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/Python-3.13-blue.svg)]()
 [![PyTorch](https://img.shields.io/badge/PyTorch-HuggingFace-ee4c2c.svg)]()
 [![Gemini](https://img.shields.io/badge/LLM-Gemini-4285F4.svg)]()
-[![FastAPI](https://img.shields.io/badge/FastAPI-planned-green.svg)]()
+[![FastAPI](https://img.shields.io/badge/FastAPI-ready-green.svg)]()
 [![Status](https://img.shields.io/badge/Status-WIP-yellow.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)]()
 
@@ -75,7 +75,7 @@ LLM에 모든 판단을 맡기지 않고, **직접 학습한 감정 분류기**�
 | 감정 분류 | KoBERT 파인튜닝 (6-클래스) + Gemini 하이브리드 교차 검증 | ✅ 완료 |
 | 응답 생성 | Gemini API + 감정 주입 공감 프롬프트 | ✅ 완료 |
 | 대화 플랫폼 | Streamlit (마음 날씨 이모지 위젯 + 감정 스펙트럼) | ✅ 완료 |
-| 백엔드 통합 | FastAPI (REST API 엔드포인트) | ⏳ 예정 |
+| 백엔드 통합 | FastAPI (REST API 엔드포인트 /docs, /api/v1/chat) | ✅ 완료 |
 | 감정 로그 | Oracle (세션별 감정 변화 기록) | ⏳ 예정 |
 
 ---
@@ -115,12 +115,19 @@ LLM에 모든 판단을 맡기지 않고, **직접 학습한 감정 분류기**�
 ```
 Daon/
 ├── app/
+│   ├── main.py              # 🚀 FastAPI REST API 서버 진입점              ✅
 │   ├── ui.py                # 🌿 Streamlit 대화형 플랫폼 (마음 날씨/감정 차트) ✅
+│   ├── api/
+│   │   ├── routes.py        # 📡 엔드포인트 (/health, /api/v1/chat 등)      ✅
+│   │   └── schemas.py       # 📋 Pydantic 요청/응답 데이터 스키마          ✅
 │   └── core/
 │       ├── crisis_gate.py   # 🛡️ 위기 탐지 게이트 (Safety Gate)            ✅
 │       ├── emotion.py       # 🎭 6-클래스 감정분류 + Gemini 하이브리드 검증   ✅
 │       ├── llm.py           # 💬 Gemini 공감 응답 생성기                   ✅
 │       └── engine.py        # ⚙️ 3단계 안전 통합 오케스트레이터             ✅
+├── tests/
+│   ├── test_crisis_gate.py  # 🛡️ 위기 탐지 게이트 및 미탐 방지 단위 테스트 (21건) ✅
+│   └── test_api.py          # 📡 FastAPI REST API 통합 테스트              ✅
 ├── src/
 │   ├── crisis_gate.py       # 위기 탐지 게이트 1차 프로토타입
 │   ├── explore.py           # 데이터 탐색 스크립트
@@ -143,7 +150,8 @@ Daon/
 - [x] **Phase 3** — 감정 분류기 학습 (KoBERT 파인튜닝, Acc 57.40%)
 - [x] **Phase 4** — 위기 탐지 게이트 (규칙 기반, 강도 분기)
 - [x] **Phase 5** — LLM 연동 & 프롬프트 설계 & 하이브리드 교차 검증 (Gemini) ✅
-- [ ] **Phase 6** — FastAPI 백엔드 통합 + Oracle 연동
+- [x] **Phase 6-1** — FastAPI 백엔드 통합 & REST API 서빙 ✅
+- [ ] **Phase 6-2** — Oracle 연동 (세션별 감정 변화 영구 기록)
 - [x] **Phase 7** — Streamlit MVP 플랫폼 (마음 날씨 + 감정 스펙트럼) ✅
 - [ ] **Phase 8~9** — JavaScript 프론트엔드 전환 & 배포
 
@@ -153,7 +161,7 @@ Daon/
 
 ```bash
 # 1. 가상환경 생성 및 활성화
-python -m venv venv
+py -m venv venv
 venv\Scripts\activate            # macOS/Linux: source venv/bin/activate
 
 # 2. 의존성 설치
@@ -162,7 +170,13 @@ pip install -r requirements.txt
 # 3. 환경 변수 설정 (.env 파일 생성)
 # GEMINI_API_KEY=your_gemini_api_key
 
-# 4. Streamlit 대화형 챗봇 플랫폼 실행
+# 4. FastAPI 백엔드 서버 실행 (Swagger 문서: http://localhost:8000/docs)
+uvicorn app.main:app --reload
+
+# 5. 단위 테스트 실행 (21건 전체 통과)
+pytest -v
+
+# 6. Streamlit 대화형 챗봇 플랫폼 실행 (http://localhost:8501)
 streamlit run app/ui.py
 ```
 
