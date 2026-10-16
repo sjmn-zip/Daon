@@ -128,9 +128,9 @@ Daon/
 ├── tests/
 │   ├── test_crisis_gate.py  # 🛡️ 위기 탐지 게이트 및 미탐 방지 단위 테스트 (21건) ✅
 │   └── test_api.py          # 📡 FastAPI REST API 통합 테스트              ✅
-├── Daon.ipynb               # KoBERT 파인튜닝 학습 노트북 (Colab)
-├── .env                     # API 키 (gitignore)
-├── requirements.txt         # 필수 라이브러리 목록
+├── Daon.ipynb               # KoBERT 파인튜닝 학습 노트북 (Colab)           ✅   
+├── .env                     # API 키 (gitignore)                           ✅ 
+├── requirements.txt         # 필수 라이브러리 목록                          ✅
 └── README.md
 ```
 
