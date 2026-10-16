@@ -128,12 +128,6 @@ Daon/
 ├── tests/
 │   ├── test_crisis_gate.py  # 🛡️ 위기 탐지 게이트 및 미탐 방지 단위 테스트 (21건) ✅
 │   └── test_api.py          # 📡 FastAPI REST API 통합 테스트              ✅
-├── src/
-│   ├── crisis_gate.py       # 위기 탐지 게이트 1차 프로토타입
-│   ├── explore.py           # 데이터 탐색 스크립트
-│   ├── llm_test.py          # Gemini API 호출 테스트
-│   └── process.py           # AI Hub 데이터 전처리 파이프라인
-├── data/                    # 데이터셋 (gitignore)
 ├── Daon.ipynb               # KoBERT 파인튜닝 학습 노트북 (Colab)
 ├── .env                     # API 키 (gitignore)
 ├── requirements.txt         # 필수 라이브러리 목록
